@@ -32,44 +32,52 @@ def add_layer(inputs, in_size, out_size, n_layer, activation_function=None):
         tf.summary.histogram(layer_name + '/outputs', outputs)
     return outputs
 
+def get_dataPredict(X, y):
+    # define placeholder for inputs to network
+    with tf.name_scope('inputs'):
+        xs = tf.placeholder(tf.float32, [None, 2], name='x_input')
+        ys = tf.placeholder(tf.float32, [None, 1], name='y_input')
+
+    # add hidden layer
+    l1 = add_layer(X, 2, 10, n_layer=1, activation_function=tf.nn.relu)
+    # add output layer
+    prediction = add_layer(l1, 10, 1, n_layer=2, activation_function=None)
+
+    # the error between prediciton and real data
+    with tf.name_scope('loss'):
+        loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction),
+                                            reduction_indices=[1]))
+        tf.summary.scalar('loss', loss)
+
+    with tf.name_scope('train'):
+        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
+
+    sess = tf.Session()
+    merged = tf.summary.merge_all()
+
+    writer = tf.summary.FileWriter("logs/", sess.graph)
+
+    init = tf.global_variables_initializer()
+    sess.run(init)
+
+    result = 0
+
+    for i in range(1000):
+        sess.run(train_step, feed_dict={xs: X, ys: y})
+        if i % 50 == 0:
+            result = sess.run(merged,
+                            feed_dict={xs: X, ys: y})
+            writer.add_summary(result, i)
+
+    return result
+
+    # direct to the local dir and run this in terminal:
+    # $ tensorboard --logdir logs
+
+result = 0
 # test data
 data = np.loadtxt('ex2data1.txt', delimiter=",")
 X = data[:,:2] #100x2
 y = data[:,2][:, np.newaxis]  #100x17
 
-# define placeholder for inputs to network
-with tf.name_scope('inputs'):
-    xs = tf.placeholder(tf.float32, [None, 2], name='x_input')
-    ys = tf.placeholder(tf.float32, [None, 1], name='y_input')
-
-# add hidden layer
-l1 = add_layer(X, 2, 10, n_layer=1, activation_function=tf.nn.relu)
-# add output layer
-prediction = add_layer(l1, 10, 1, n_layer=2, activation_function=None)
-
-# the error between prediciton and real data
-with tf.name_scope('loss'):
-    loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction),
-                                        reduction_indices=[1]))
-    tf.summary.scalar('loss', loss)
-
-with tf.name_scope('train'):
-    train_step = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
-
-sess = tf.Session()
-merged = tf.summary.merge_all()
-
-writer = tf.summary.FileWriter("logs/", sess.graph)
-
-init = tf.global_variables_initializer()
-sess.run(init)
-
-for i in range(1000):
-    sess.run(train_step, feed_dict={xs: X, ys: y})
-    if i % 50 == 0:
-        result = sess.run(merged,
-                          feed_dict={xs: X, ys: y})
-        writer.add_summary(result, i)
-
-# direct to the local dir and run this in terminal:
-# $ tensorboard --logdir logs
+result =  get_dataPredict(X, y)

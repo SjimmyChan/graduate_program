@@ -17,13 +17,8 @@ def get_dataJson(stockid):
     data_twstock = []
 
     dataset = run_getDataset(dataset)
-    dataset = run_getCostumerStock(dataset, 2330) #stockid from db
+    dataset = run_getCostumerStock(dataset, stockid) #stockid from db
     data_correlated, data_twstock = get_datasetCorrelation(dataset)
-    print(data_correlated)
-    print(data_twstock)
-    data1 = np.array(data_correlated)
-    data2 = np.array(data_twstock)
-    print(data1.shape, data2.shape)
     #------------------------------
     
     #dataset_json = json.dumps(dataset, ensure_ascii=False)
@@ -32,8 +27,7 @@ def get_dataJson(stockid):
     #    json.dump(dataset_json, filejson, ensure_ascii=False)
     #filejson.close()
     #------------------------------
-
-get_dataJson(2330)
+    return data_correlated, data_twstock
     
 
 
