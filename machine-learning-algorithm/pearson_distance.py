@@ -19,8 +19,9 @@ def pearson_distance(other_stock, tw_stock) :
 
 def get_datasetCorrelation(dataset):
     '''get correlation stock with costumer's stock'''
-    data = dictionary_to_list(dataset)
+    data, data_id = dictionary_to_list(dataset)
     correlation_data = []
+    correlation_id = []
     tw_stock = []
 
     for ratio in data[:][len(data[0])]:
@@ -33,11 +34,21 @@ def get_datasetCorrelation(dataset):
         
         if pearson_distance(other_stock, tw_stock) >= 0.6:
             correlation_data.append(other_stock)
-    return correlation_data, tw_stock
+            #correlation_id.append(data_id[category])
+
+    return correlation_data, tw_stock, correlation_id
 
 def dictionary_to_list(dataset):
     '''transfer dictionary dataset to list dataset'''
     data = []
+    data_id = []
+
     for key in dataset.keys():
         data.append(list(dataset[key].values()))
-    return data
+    for key in dataset.keys():
+        for stock_name in dataset[key].keys():
+            print(stock_name)
+            break
+        break
+
+    return data, data_id
