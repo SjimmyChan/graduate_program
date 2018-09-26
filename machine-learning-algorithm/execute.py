@@ -11,5 +11,6 @@ result = 0
 #get training data
 data_correlated, data_twstock, data_id = get_dataJson(2330)
 
+result = 0
 #get predict
 #result = get_dataPredict(data_correlated, data_twstock)

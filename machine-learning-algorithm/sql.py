@@ -1,3 +1,5 @@
+#######################GET DATA########################
+
 #get place stock's ratio
 def sorted_data(place):
     sort_sql = """
@@ -65,7 +67,36 @@ def getCompanyInfo(stockid):
     """.format(stockid)
     return sql
 
-def saveCorrelationID(data_id):
+#get twstock correlation international stock data
+def get_savedCorrelationID(stock_id):
     sql = """
-    
-    """
+    SELECT 
+        internationalstock_name as other_stock_id
+    FROM
+        stock_relationship
+    WHERE
+        stock_id = "{}"
+    """.format(stock_id)
+    return sql
+
+###############################SAVE################################
+
+#save twstock correlation international stock data
+def saveCorrelationID(stock_id, data_name):
+    sql = """
+    INSERT INTO `stock_relationship`
+        (`twstock_id`, `internationalstock_name`)
+    VALUES
+        ("{}", "{}")
+    """.format(stock_id, data_name)
+    return sql
+
+#save predict ratio to database
+def save_predictionRatio(stock_id, ratio, accuracy, date):
+    sql = """
+    INSERT INTO `predict_ratio`
+        (`no`, `result`, `accuracy`, `date`)
+    VALUES
+        ("{}", "{}", "{}", "{}")
+    """.format(stock_id, ratio, accuracy, date)
+    return sql

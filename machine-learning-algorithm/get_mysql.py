@@ -4,11 +4,12 @@ from datetime import datetime
 from sql import maxCount_sql
 from sql import sorted_data
 from sql import getTWStockDate
+from sql import saveCorrelationID
 
 #start_date = datetime.date(2015, 1, 1)
 #end_date = datetime.date(2018, 1, 1)
 
-#diff_date = end_date - start_date
+########################calculate########################
 
 def get_sortAllData(dataset, cursor):
     '''execute sql get data and sorted'''
@@ -35,6 +36,13 @@ def get_twstock(dataset, stockid, cursor):
             data_insert(dataset, date, str(stockid), data[0][1])
     return absence_date
 
+def save_data(data_id, stock_id, cursor):
+    for correlation in data_id:
+        sql = saveCorrelationID(stock_id, correlation)
+        cursor.execute(sql)
+
+#############################clean#############################
+
 def clean_absence(dataset, absence_date):
     for date in absence_date:
         if date in dataset.keys():
@@ -59,6 +67,8 @@ def data_insert(data, date, place, ratio):
         place_ratio[place] = ratio
         data[date] =  place_ratio
     return data
+
+#############################database#############################
 
 def run_getDataset(dataset):
     '''get world stock data'''
@@ -97,6 +107,34 @@ def run_getCostumerStock(dataset, stockid):
         print("error occur!!")
     dataset = clean_absence(dataset, absence_date)
     return dataset
+
+    #disconnect
+    db.close()
+
+def save_correlationData(data_id, stock_id):
+    #connect mysql
+    db = pymysql.connect(host='birdyoserv.ga', port=3307, user='admin', passwd='1234', db='stock_analytics')
+    #db = pymysql.connect("localhost", "root", "root", "stock_analytics")
+    cursor = db.cursor()
+
+    try:
+        save_data(data_id, stock_id, cursor)
+        print("data saved")
+    except:
+        print("error occur!!")
+    #disconnect
+    db.close()
+
+def save_predictRatio(stock_id, ratio):
+    #connect mysql
+    db = pymysql.connect(host='birdyoserv.ga', port=3307, user='admin', passwd='1234', db='stock_analytics')
+    #db = pymysql.connect("localhost", "root", "root", "stock_analytics")
+    cursor = db.cursor()
+
+    try:
+        save_predictRatio()
+    except:
+        print("error occur!!")
 
     #disconnect
     db.close()
