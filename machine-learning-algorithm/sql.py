@@ -64,3 +64,8 @@ def getCompanyInfo(stockid):
         no = {}
     """.format(stockid)
     return sql
+
+def saveCorrelationID(data_id):
+    sql = """
+    
+    """

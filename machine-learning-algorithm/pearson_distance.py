@@ -34,7 +34,7 @@ def get_datasetCorrelation(dataset):
         
         if pearson_distance(other_stock, tw_stock) >= 0.6:
             correlation_data.append(other_stock)
-            #correlation_id.append(data_id[category])
+            correlation_id.append(data_id[category])
 
     return correlation_data, tw_stock, correlation_id
 
@@ -47,7 +47,7 @@ def dictionary_to_list(dataset):
         data.append(list(dataset[key].values()))
     for key in dataset.keys():
         for stock_name in dataset[key].keys():
-            print(stock_name)
+            data_id.append(list(stock_name))
             break
         break
 

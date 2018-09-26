@@ -21,7 +21,6 @@ def get_dataJson(stockid):
     dataset = run_getCostumerStock(dataset, stockid) #stockid from db
     data_correlated, data_twstock, data_id = get_datasetCorrelation(dataset)
     #------------------------------
-    
     #dataset_json = json.dumps(dataset, ensure_ascii=False)
 
     #with open('data.json', 'w', encoding="utf-8") as filejson:
