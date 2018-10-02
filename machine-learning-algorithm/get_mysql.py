@@ -3,8 +3,10 @@ import os
 from datetime import datetime
 from sql import maxCount_sql
 from sql import sorted_data
-from sql import getTWStockDate
-from sql import saveCorrelationID
+from sql import get_TWStockDate
+from sql import save_correlationID
+from sql import companyInfo
+from sql import save_predictionRatio
 
 #start_date = datetime.date(2015, 1, 1)
 #end_date = datetime.date(2018, 1, 1)
@@ -26,7 +28,7 @@ def get_twstock(dataset, stockid, cursor):
     '''get stock information'''
     absence_date = []
     for date in dataset.keys():
-        cursor.execute(getTWStockDate(stockid, date))
+        cursor.execute(get_TWStockDate(stockid, date))
         data = cursor.fetchall()
         if not data:
             #print("None")
@@ -38,7 +40,7 @@ def get_twstock(dataset, stockid, cursor):
 
 def save_data(data_id, stock_id, cursor):
     for correlation in data_id:
-        sql = saveCorrelationID(stock_id, correlation)
+        sql = save_correlationID(stock_id, correlation)
         cursor.execute(sql)
 
 #############################clean#############################
@@ -70,6 +72,23 @@ def data_insert(data, date, place, ratio):
 
 #############################database#############################
 
+def get_companyList():
+    db = pymysql.connect(host='birdyoserv.ga', port=3307, user='admin', passwd='1234', db='stock_analytics')
+    #db = pymysql.connect("localhost", "root", "root", "stock_analytics")
+    cursor = db.cursor()    
+    
+    companylist = []
+    try:
+        cursor.execute(companyInfo)
+        companylist = cursor.fetchall()
+    except:
+        print("get company list error!!")
+
+    return companylist
+
+    #disconnect
+    db.close()
+
 def run_getDataset(dataset):
     '''get world stock data'''
     #connect mysql
@@ -81,7 +100,7 @@ def run_getDataset(dataset):
     try:
         get_sortAllData(dataset, cursor)
     except:
-        print ("error occur!!")
+        print ("run get dataset error!!")
 
     #output dataset:
     #dataset = {'date':{'place':{'ratio': }}}
@@ -104,7 +123,7 @@ def run_getCostumerStock(dataset, stockid):
         absence_date = get_twstock(dataset, stockid, cursor)
         #get_twstock(dataset, stockid, cursor)
     except:
-        print("error occur!!")
+        print("run get costumer stock error!!")
     dataset = clean_absence(dataset, absence_date)
     return dataset
 
@@ -121,7 +140,7 @@ def save_correlationData(data_id, stock_id):
         save_data(data_id, stock_id, cursor)
         print("data saved")
     except:
-        print("error occur!!")
+        print("save correlation data error!!")
     #disconnect
     db.close()
 
@@ -132,9 +151,9 @@ def save_predictRatio(stock_id, ratio):
     cursor = db.cursor()
 
     try:
-        save_predictRatio()
+        save_predictionRatio(stock_id, ratio, None, None)
     except:
-        print("error occur!!")
+        print("save predict ratio error!!")
 
     #disconnect
     db.close()

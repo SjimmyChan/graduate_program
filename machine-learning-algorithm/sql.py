@@ -43,7 +43,7 @@ WHERE
 ORDER BY x.type ASC
 """
 #get costumer's stock data
-def getTWStockDate(stockid, date):
+def get_TWStockDate(stockid, date):
     sql = """
     SELECT DISTINCT  
         `date` as time, difference as ratio, no as stockid
@@ -56,16 +56,11 @@ def getTWStockDate(stockid, date):
     return sql
 
 #get company stockid
-def getCompanyInfo(stockid):
-    sql = """
-    SELECT DISTINCT  
-        stockid as no, name as short_name
-    FROM
-        tw_company_list
-    WHERE
-        no = {}
-    """.format(stockid)
-    return sql
+companyInfo = """
+SELECT DISTINCT  
+    no as stockid
+FROM
+    tw_company_list"""
 
 #get twstock correlation international stock data
 def get_savedCorrelationID(stock_id):
@@ -82,7 +77,7 @@ def get_savedCorrelationID(stock_id):
 ###############################SAVE################################
 
 #save twstock correlation international stock data
-def saveCorrelationID(stock_id, data_name):
+def save_correlationID(stock_id, data_name):
     sql = """
     INSERT INTO `stock_relationship`
         (`twstock_id`, `internationalstock_name`)
