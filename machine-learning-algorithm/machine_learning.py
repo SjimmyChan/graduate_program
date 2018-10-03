@@ -1,4 +1,3 @@
-from __future__ import print_function
 import tensorflow as tf
 import numpy as np
 
@@ -18,6 +17,8 @@ xs = tf.placeholder(tf.float32)
 ys = tf.placeholder(tf.float32)
 
 def data_training(X, y):
+    data_twstock = np.array(y)
+    data_correlated = np.array(X)
     # add hidden layer
     l1 = add_layer(xs, 1, 10, activation_function=tf.nn.relu)
     # add output layer
@@ -35,28 +36,18 @@ def data_training(X, y):
 
     for i in range(1000):
         # training
-        sess.run(train_step, feed_dict={xs: x_data, ys: y_data})
+        sess.run(train_step, feed_dict={xs: data_correlated, ys: data_twstock})
     return sess, predict
 
-def get_prediction(session, predict, X):
-    session.run(predict, feed_dict = {xs: X})
-    return predict
+#def get_prediction(session, X):
+#    session.run(predict, feed_dict = {xs: X})
+#    return predict
 
-# Make up some real data
-x_data = np.linspace(-1,1,300)[:, np.newaxis]
-noise = np.random.normal(0, 0.05, x_data.shape)
-y_data = np.square(x_data) - 0.5 + noise
+#saver = tf.train.Saver()
+#saver.save(session, save_path = 'data/', global_step=1)
 
-X = np.array([0.2])[:, np.newaxis]
-prediction = 0
-session, prediction = data_training(x_data, y_data)
-prediction = get_prediction(session, prediction, X)
+#all_var = tf.trainable_variables()
 
-saver = tf.train.Saver()
-saver.save(session, save_path = 'data/', global_step=1)
-
-all_var = tf.trainable_variables()
-
-for layer in all_var:
-    print(layer.name)
-    print(session.run(layer))
+#for layer in all_var:
+#    print(layer.name)
+#    print(session.run(layer))

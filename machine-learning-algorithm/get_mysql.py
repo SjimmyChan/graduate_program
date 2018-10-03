@@ -81,6 +81,7 @@ def get_companyList():
     try:
         cursor.execute(companyInfo)
         companylist = cursor.fetchall()
+        print("get company list complete")
     except:
         print("get company list error!!")
 
@@ -99,6 +100,7 @@ def run_getDataset(dataset):
     #get data and sorted
     try:
         get_sortAllData(dataset, cursor)
+        print("get international data complete")
     except:
         print ("run get dataset error!!")
 
@@ -122,6 +124,7 @@ def run_getCostumerStock(dataset, stockid):
     try:
         absence_date = get_twstock(dataset, stockid, cursor)
         #get_twstock(dataset, stockid, cursor)
+        print("get costumer stock data complete")
     except:
         print("run get costumer stock error!!")
     dataset = clean_absence(dataset, absence_date)
@@ -138,7 +141,7 @@ def save_correlationData(data_id, stock_id):
 
     try:
         save_data(data_id, stock_id, cursor)
-        print("data saved")
+        print("{} data correlated {} saved".format(data_id, stock_id))
     except:
         print("save correlation data error!!")
     #disconnect
@@ -151,7 +154,9 @@ def save_predictRatio(stock_id, ratio):
     cursor = db.cursor()
 
     try:
-        save_predictionRatio(stock_id, ratio, None, None)
+        cursor.execute(save_predictionRatio(stock_id, ratio, None, None))
+        db.commit()
+        print("save stock : {} complete".format(stock_id))
     except:
         print("save predict ratio error!!")
 

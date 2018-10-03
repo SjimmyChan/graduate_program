@@ -19,7 +19,7 @@ def get_dataJson(stock_id):
     data_id = []
 
     dataset = run_getDataset(dataset)
-    dataset = run_getCostumerStock(dataset, stock_id) #stockid from db
+    dataset = run_getCostumerStock(dataset, 2330) #stockid from db
     data_correlated, data_twstock, data_id = get_datasetCorrelation(dataset)
     #------------------------------
     #dataset_json = json.dumps(dataset, ensure_ascii=False)

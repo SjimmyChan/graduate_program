@@ -3,7 +3,7 @@
 #get place stock's ratio
 def sorted_data(place):
     sort_sql = """
-        SELECT
+        SELECT DISTINCT
             `time`, ratio 
         FROM
             world_stock_price
@@ -14,7 +14,7 @@ def sorted_data(place):
 
 #history data max = 784
 maxCount_sql = """
-SELECT
+SELECT DISTINCT
     x.type
 FROM
     (
@@ -50,7 +50,7 @@ def get_TWStockDate(stockid, date):
     FROM
         tw_stock_price
     WHERE
-        no = {0} and
+        no = '{0}' and
         `date` = '{1}'
     """.format(stockid, date)
     return sql
