@@ -38,10 +38,11 @@ def get_twstock(dataset, stockid, cursor):
             data_insert(dataset, date, str(stockid), data[0][1])
     return absence_date
 
-def save_data(data_id, stock_id, cursor):
-    for correlation in data_id:
-        sql = save_correlationID(stock_id, correlation)
+def save_data(data_id, stock_id, correlation_ratio, cursor, db):
+    for location in range(len(data_id)):
+        sql = save_correlationID(stock_id, data_id[location], correlation_ratio[location][0])
         cursor.execute(sql)
+        db.commit()
 
 #############################clean#############################
 
@@ -133,15 +134,15 @@ def run_getCostumerStock(dataset, stockid):
     #disconnect
     db.close()
 
-def save_correlationData(data_id, stock_id):
+def save_correlationData(data_id, stock_id, correlation_ratio):
     #connect mysql
     db = pymysql.connect(host='birdyoserv.ga', port=3307, user='admin', passwd='1234', db='stock_analytics')
     #db = pymysql.connect("localhost", "root", "root", "stock_analytics")
     cursor = db.cursor()
 
     try:
-        save_data(data_id, stock_id, cursor)
-        print("{} data correlated {} saved".format(data_id, stock_id))
+        save_data(data_id, stock_id, correlation_ratio, cursor, db)
+        print("{} correlated data saved".format(stock_id))
     except:
         print("save correlation data error!!")
     #disconnect

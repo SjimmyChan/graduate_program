@@ -12,6 +12,19 @@ def sorted_data(place):
     """.format(place)
     return sort_sql
 
+#get daily international stock ratio
+def daily_ratio(place, date):
+    sql = """
+        SELECT 
+            ratio 
+        FROM
+            world_stock_price
+        WHERE
+            type = '{}' and
+            `time` = '{}'
+    """.format(place, date)
+    return sql
+
 #history data max = 784
 maxCount_sql = """
 SELECT DISTINCT
@@ -66,24 +79,23 @@ FROM
 def get_savedCorrelationID(stock_id):
     sql = """
     SELECT 
-        internationalstock_name as other_stock_id
+        correlation_ratio
     FROM
         stock_relationship
     WHERE
-        stock_id = "{}"
+        twstock_id = '{}'
     """.format(stock_id)
     return sql
 
 ###############################SAVE################################
 
 #save twstock correlation international stock data
-def save_correlationID(stock_id, data_name):
+def save_correlationID(stock_id, data_name, correlation_ratio):
     sql = """
-    INSERT INTO `stock_relationship`
-        (`twstock_id`, `internationalstock_name`)
+    INSERT INTO stock_relationship
+        (twstock_id, internationalstock_name, correlation_ratio)
     VALUES
-        ("{}", "{}")
-    """.format(stock_id, data_name)
+        ("{}", "{}", {})""".format(stock_id, data_name, correlation_ratio)
     return sql
 
 #save predict ratio to database
@@ -92,6 +104,5 @@ def save_predictionRatio(stock_id, ratio, accuracy, date):
     INSERT INTO `predict_ratio`
         (`no`, `result`, `accuracy`, `date`)
     VALUES
-        ("{}", "{}", "{}", "{}")
-    """.format(stock_id, ratio, accuracy, date)
+        ("{}", "{}", "{}", "{}")""".format(stock_id, ratio, accuracy, date)
     return sql

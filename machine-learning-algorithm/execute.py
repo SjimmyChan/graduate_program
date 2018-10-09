@@ -2,29 +2,53 @@ import os
 import re
 import numpy as np
 import tensorflow as tf
+import json
 from statistics_json import get_dataJson
 from get_mysql import get_companyList
+from get_mysql import save_correlationData
+from machine_learning_keras import data_training
 
-data_correlated = []
-data_twstock = []
-data_id = []
-company_list = []
 result = 0
 
-#get current company's stock list
-#company_list = get_companyList()
+#def readjson(filename):
+#    with open(filename,'r') as load_f:
+#        load_dict = json.load(load_f)
+#    return load_dict
 
-#get training data
-data_correlated, data_twstock, data_id = get_dataJson(2330)
-print("data initial complete")
-data_correlated = np.array(data_correlated)
-data_twstock = np.array(data_twstock)
-data_id = np.array(data_id)
-print(data_correlated.shape, data_id.shape, data_twstock.shape)
-    #get predict
-    #session, prediction = data_training(data_correlated, data_twstock)
-    #saver = tf.train.Saver()
-    #saver.save(session, save_path = 'data/', global_step=step)
+#x = readjson("correlated.json")
+#y = readjson("twstock.json")
+#cr = readjson("correlated_ratio.json")
 
-#for stock_id in company_list:
+#x = np.array(x)
+#y = np.array(y)
+#cr = np.array(cr)
+
+#print(x.shape, y.shape, cr.shape)
+
+def initialize():
+    
+    data_correlated = []
+    data_twstock = []
+    data_id = []
+    data_ratio = []
+    company_list = []
+    
+    #get current company's stock list
+    #company_list = get_companyList()
+    #get training data
+    #for stock in company_list:
+        #if len(stock[0]) == 4:
+            #print(stock[0])
+    data_correlated, data_twstock, data_id, data_ratio = get_dataJson('2327')
+    if not data_twstock:
+        print("no {} stock data".format('2327'))
+        #continue
+    else:
+        #data training
+        data_training('2327', data_correlated, data_ratio, data_twstock)
+        save_correlationData(data_id, '2327', data_ratio)
+        #else:
+            #print("unconcerned stock id")
+
+initialize()
 
