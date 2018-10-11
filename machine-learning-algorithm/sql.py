@@ -15,7 +15,7 @@ def sorted_data(place):
 #get daily international stock ratio
 def daily_ratio(place, date):
     sql = """
-        SELECT 
+        SELECT DISTINCT
             ratio 
         FROM
             world_stock_price

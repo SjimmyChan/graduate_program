@@ -148,14 +148,14 @@ def save_correlationData(data_id, stock_id, correlation_ratio):
     #disconnect
     db.close()
 
-def save_predictRatio(stock_id, ratio):
+def save_predictRatio(stock_id, ratio, date):
     #connect mysql
     db = pymysql.connect(host='birdyoserv.ga', port=3307, user='admin', passwd='1234', db='stock_analytics')
     #db = pymysql.connect("localhost", "root", "root", "stock_analytics")
     cursor = db.cursor()
 
     try:
-        cursor.execute(save_predictionRatio(stock_id, ratio, None, None))
+        cursor.execute(save_predictionRatio(stock_id, ratio, None, date))
         db.commit()
         print("save stock : {} complete".format(stock_id))
     except:

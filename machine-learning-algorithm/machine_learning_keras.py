@@ -1,8 +1,7 @@
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation, Flatten
 import numpy as np
 import json
-
 
 #def readjson(filename):
 #    with open(filename,'r') as load_f:
@@ -10,51 +9,53 @@ import json
 #    return load_dict
 
 def data_training(stockid, correlation_data, correlation_ratio, twstock_data):
-    #x = readjson("correlated.json")
-    #y = readjson("twstock.json")
-    #cr = readjson("correlated_ratio.json")
+    x = correlation_data
+    y = twstock_data
+    cr = correlation_ratio
 
-    x = np.array(correlation_data)
-    y = np.array(twstock_data)
-    cr = np.array(correlation_ratio)
-    m, n = x.shape
-    x = np.transpose(x)
+    t1 = list()
+    for s1 in range(92):
+        t2 = list()
+        for s2 in range(91):
+            t3 = list()
+            t3.append(x[s2][s1])
+            t3.append(cr[s2][0])
+            t2.append(t3)
+        t1.append(t2)
+    t = np.array(t1)
+    y = np.array(y)
 
-    n = []
-    t=0
-    for correlation_ratio in x:
-        c=0
-        nn = []
-        for ratio in correlation_ratio:
-            #nn.append((b-np.mean(x, axis=0))/np.std(x, axis=0))
-            #s = (b-np.mean(x, axis=1)[t])/np.std(x, axis=1)[t]
-            nn.append(ratio)
-            nn.append(cr[c][0])
-            c = c+1
-        n.append(nn)
-        t = t+1
-    x = np.array(n)
-
-    M = m*2
     model = Sequential()
-    model.add(Dense(1024,input_shape=(M,),activation='relu'))
+    model.add(Flatten(input_shape=(91,2)))
+    model.add(Dense(1024,activation='relu'))
     model.add(Dense(512,activation='relu'))
     model.add(Dense(1))
     model.compile(optimizer='adam', loss='mae', metrics=['mae'])
-    model.fit(x, y, batch_size=4, epochs=80, initial_epoch=0)
+    model.fit(t, y, batch_size=4, epochs=80, initial_epoch=0)
     model.save_weights('data\{}.h5'.format(stockid))
     print("save {} model complete".format(stockid))
     del model
 
-def get_predict(stockid, correlated_data, len_of_data):
+def get_predict(stockid, correlated_data, correlated_ratio):
+    x = correlated_data
+    cr = correlated_ratio
 
-    M = len_of_data*2
+    t1 = list()
+    for s2 in range(91):
+        t2 = list()
+        t2.append(x[s2])
+        t2.append(cr[s2])
+        t1.append(t2)
+    t = np.array(t1)
+    t = t[np.newaxis, :, :]
+    print(t.shape)
+
     model = Sequential()
-    model.add(Dense(1024,input_shape=(M,),activation='relu'))
+    model.add(Flatten(input_shape=(91,2)))
+    model.add(Dense(1024,activation='relu'))
     model.add(Dense(512,activation='relu'))
     model.add(Dense(1))
     model.load_weights('data\{}.h5'.format(stockid))
-    print("get {} predict complete".format(stockid))
     
-    return model.predict(correlated_data)
+    return model.predict(t)
 

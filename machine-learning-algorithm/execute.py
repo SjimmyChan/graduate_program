@@ -31,24 +31,24 @@ def initialize():
     data_twstock = []
     data_id = []
     data_ratio = []
-    company_list = []
+    company_list = ['2330', '2327', '3008']
     
     #get current company's stock list
     #company_list = get_companyList()
     #get training data
-    #for stock in company_list:
+    for stock in company_list:
         #if len(stock[0]) == 4:
             #print(stock[0])
-    data_correlated, data_twstock, data_id, data_ratio = get_dataJson('2327')
-    if not data_twstock:
-        print("no {} stock data".format('2327'))
-        #continue
-    else:
-        #data training
-        data_training('2327', data_correlated, data_ratio, data_twstock)
-        save_correlationData(data_id, '2327', data_ratio)
+        data_correlated, data_twstock, data_id, data_ratio = get_dataJson(stock)
+        if not data_twstock:
+            print("no {} stock data".format(stock))
+            continue
+        else:
+            #data training
+            data_training(stock, data_correlated, data_ratio, data_twstock)
+            save_correlationData(data_id, stock, data_ratio)
         #else:
-            #print("unconcerned stock id")
+        #    print("unconcerned stock id")
 
 initialize()
 
