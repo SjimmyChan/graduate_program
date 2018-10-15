@@ -1,13 +1,9 @@
-import os 
-import re
 import datetime
 import time
 import numpy as np
-import tensorflow as tf
-import json
 import pymysql
-from get_mysql import ratio_clean
-from get_mysql import save_predictRatio
+from connect_database import ratio_clean
+from connect_database import save_predictRatio
 from sql import daily_ratio
 from sql import maxCount_sql
 from sql import get_savedCorrelationID

@@ -3,11 +3,6 @@ from keras.layers import Dense, Activation, Flatten
 import numpy as np
 import json
 
-#def readjson(filename):
-#    with open(filename,'r') as load_f:
-#        load_dict = json.load(load_f)
-#    return load_dict
-
 def data_training(stockid, correlation_data, correlation_ratio, twstock_data):
     x = correlation_data
     y = twstock_data
